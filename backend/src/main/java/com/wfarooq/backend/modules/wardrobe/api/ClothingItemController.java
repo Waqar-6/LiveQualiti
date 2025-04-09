@@ -2,6 +2,9 @@ package com.wfarooq.backend.modules.wardrobe.api;
 
 import com.wfarooq.backend.common.dto.ResponseDto;
 import com.wfarooq.backend.modules.wardrobe.application.IClothingService;
+import com.wfarooq.backend.modules.wardrobe.constants.Category;
+import com.wfarooq.backend.modules.wardrobe.constants.Color;
+import com.wfarooq.backend.modules.wardrobe.constants.Season;
 import com.wfarooq.backend.modules.wardrobe.dto.request.CreateClothingItemRequest;
 import com.wfarooq.backend.modules.wardrobe.dto.response.ClothingItemResponse;
 import jakarta.validation.Valid;
@@ -11,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,6 +28,7 @@ public class ClothingItemController {
         this.clothingService = clothingService;
     }
 
+    // CRUD
 
     @PostMapping
     public ResponseEntity<ClothingItemResponse> createClothingItem(
@@ -55,6 +60,40 @@ public class ClothingItemController {
     public ResponseEntity<ResponseDto> deleteClothingItem(@PathVariable UUID id) {
         clothingService.deleteClothingItem(id);
         return new ResponseEntity<>(new ResponseDto("201", "Clothing item deleted successfully"), HttpStatus.OK);
+    }
+
+    // Lists And Filtering
+    @GetMapping
+    public ResponseEntity<List<ClothingItemResponse>> getAllClothingItems() {
+        List<ClothingItemResponse> items = clothingService.getAllClothingItems();
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
+    // GET items by category
+    @GetMapping("/filter/category")
+    public ResponseEntity<List<ClothingItemResponse>> getItemsByCategory(
+            @RequestParam Category category
+    ) {
+        List<ClothingItemResponse> items = clothingService.getClothingItemsByCategory(category);
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
+    // GET items by season
+    @GetMapping("/filter/season")
+    public ResponseEntity<List<ClothingItemResponse>> getItemsBySeason(
+            @RequestParam Season season
+    ) {
+        List<ClothingItemResponse> items = clothingService.getClothingItemsBySeason(season);
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
+    // GET items by color
+    @GetMapping("/filter/color")
+    public ResponseEntity<List<ClothingItemResponse>> getItemsByColor(
+            @RequestParam Color color
+    ) {
+        List<ClothingItemResponse> items = clothingService.getClothingItemsByColor(color);
+        return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
 

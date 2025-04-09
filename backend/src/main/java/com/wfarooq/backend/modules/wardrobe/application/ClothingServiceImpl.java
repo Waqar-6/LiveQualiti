@@ -1,6 +1,9 @@
 package com.wfarooq.backend.modules.wardrobe.application;
 
 import com.wfarooq.backend.common.exception.ResourceNotFoundException;
+import com.wfarooq.backend.modules.wardrobe.constants.Category;
+import com.wfarooq.backend.modules.wardrobe.constants.Color;
+import com.wfarooq.backend.modules.wardrobe.constants.Season;
 import com.wfarooq.backend.modules.wardrobe.domain.ClothingItem;
 import com.wfarooq.backend.modules.wardrobe.dto.request.CreateClothingItemRequest;
 import com.wfarooq.backend.modules.wardrobe.dto.response.ClothingItemResponse;
@@ -11,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 public class ClothingServiceImpl implements IClothingService{
@@ -24,9 +28,9 @@ public class ClothingServiceImpl implements IClothingService{
 
 
     @Override
-    public ClothingItemResponse createClothingItem(CreateClothingItemRequest request, UUID userId) {
+    public ClothingItemResponse createClothingItem(CreateClothingItemRequest request) {
         Instant start = Instant.now();
-        logger.info("[CREATE] Creating clothing item for user: {}", userId);
+        logger.info("[CREATE] Creating clothing item : {}", request);
 
         ClothingItem item = ClothingItemMapper.toEntity(request, new ClothingItem());
 
@@ -93,5 +97,66 @@ public class ClothingServiceImpl implements IClothingService{
         clothingItemRepository.delete(item);
         logger.info("[DELETE] Deleted clothing item with ID: {}", id);
         logger.info("[METRIC] Deleted item in {}ms", Duration.between(start, Instant.now()).toMillis());
+    }
+
+
+    @Override
+    public List<ClothingItemResponse> getAllClothingItems() {
+        Instant start = Instant.now();
+        logger.info("[READ] Fetching all clothing items");
+
+        List<ClothingItem> items = clothingItemRepository.findAll();
+
+        logger.debug("[READ] Total items fetched: {}", items.size());
+        logger.info("[METRIC] Fetched all items in {}ms", Duration.between(start, Instant.now()).toMillis());
+
+        return items.stream()
+                .map(item -> ClothingItemMapper.toResponse(item, new ClothingItemResponse()))
+                .toList();
+    }
+
+    @Override
+    public List<ClothingItemResponse> getClothingItemsByCategory(Category category) {
+        Instant start = Instant.now();
+        logger.info("[READ] Fetching clothing items by category: {}", category);
+
+        List<ClothingItem> items = clothingItemRepository.findByCategory(category);
+
+        logger.debug("[READ] Items found: {}", items.size());
+        logger.info("[METRIC] Fetched items by category in {}ms", Duration.between(start, Instant.now()).toMillis());
+
+        return items.stream()
+                .map(item -> ClothingItemMapper.toResponse(item, new ClothingItemResponse()))
+                .toList();
+    }
+
+    @Override
+    public List<ClothingItemResponse> getClothingItemsBySeason(Season season) {
+        Instant start = Instant.now();
+        logger.info("[READ] Fetching clothing items by season: {}", season);
+
+        List<ClothingItem> items = clothingItemRepository.findBySeason(season);
+
+        logger.debug("[READ] Items found: {}", items.size());
+        logger.info("[METRIC] Fetched items by season in {}ms", Duration.between(start, Instant.now()).toMillis());
+
+        return items.stream()
+                .map(item -> ClothingItemMapper.toResponse(item, new ClothingItemResponse()))
+                .toList();
+    }
+
+    @Override
+    public List<ClothingItemResponse> getClothingItemsByColor(Color color) {
+        Instant start = Instant.now();
+        logger.info("[READ] Fetching clothing items by color: {}", color);
+
+        List<ClothingItem> items = clothingItemRepository.findByColor(color);
+
+        logger.debug("[READ] Items found: {}", items.size());
+        logger.info("[METRIC] Fetched items by color in {}ms", Duration.between(start, Instant.now()).toMillis());
+
+        return items.stream()
+                .map(item -> ClothingItemMapper.toResponse(item, new ClothingItemResponse()))
+                .toList();
     }
 }

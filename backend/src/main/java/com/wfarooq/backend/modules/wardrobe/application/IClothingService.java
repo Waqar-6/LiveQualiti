@@ -26,7 +26,7 @@ public interface IClothingService {
 
     List<ClothingItemResponse> getClothingItemsByCategory(Category category);
 
-    List<ClothingItemResponse> getClothingItemsBySeason(Season season;
+    List<ClothingItemResponse> getClothingItemsBySeason(Season season);
 
     List<ClothingItemResponse> getClothingItemsByColor(Color color);
 

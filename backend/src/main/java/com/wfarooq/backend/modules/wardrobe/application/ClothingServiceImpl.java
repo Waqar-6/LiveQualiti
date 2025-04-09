@@ -1,5 +1,6 @@
 package com.wfarooq.backend.modules.wardrobe.application;
 
+import com.wfarooq.backend.common.exception.ResourceAlreadyExistsException;
 import com.wfarooq.backend.common.exception.ResourceNotFoundException;
 import com.wfarooq.backend.modules.wardrobe.constants.Category;
 import com.wfarooq.backend.modules.wardrobe.constants.Color;
@@ -31,6 +32,11 @@ public class ClothingServiceImpl implements IClothingService{
     public ClothingItemResponse createClothingItem(CreateClothingItemRequest request) {
         Instant start = Instant.now();
         logger.info("[CREATE] Creating clothing item : {}", request);
+
+        if (clothingItemRepository.existsByName(request.getName())) {
+            logger.warn("[CREATE] Clothing item already exists with the name : {}", request.getName());
+            throw new ResourceAlreadyExistsException("Clothing item", "name", request.getName());
+        }
 
         ClothingItem item = ClothingItemMapper.toEntity(request, new ClothingItem());
 

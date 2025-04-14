@@ -17,7 +17,7 @@ const Header = () => {
           livQuality
         </h3>
 
-        <ul className=" hidden md:flex items-center space-x-28">
+        <ul className=" hidden md:flex items-center md:space-x-28">
           {navLinks.map((link) => (
             <li
               className={`cursor-pointer text-sm font-medium relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-gray-600 after:transition-all
@@ -32,10 +32,6 @@ const Header = () => {
               {link.label}
             </li>
           ))}
-          {/* <li className="cursor-pointer font-semibold">Home</li>
-          <li className="cursor-pointer font-semibold">About</li>
-          <li className="cursor-pointer font-semibold">Services</li>
-          <li className="cursor-pointer font-semibold">Contact</li> */}
         </ul>
 
         <div className="hidden md:flex items-center gap-8">

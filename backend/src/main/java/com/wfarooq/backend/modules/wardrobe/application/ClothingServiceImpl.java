@@ -2,6 +2,7 @@ package com.wfarooq.backend.modules.wardrobe.application;
 
 import com.wfarooq.backend.common.exception.ResourceAlreadyExistsException;
 import com.wfarooq.backend.common.exception.ResourceNotFoundException;
+import com.wfarooq.backend.infrastructure.storage.FileStorageService;
 import com.wfarooq.backend.modules.wardrobe.constants.Category;
 import com.wfarooq.backend.modules.wardrobe.constants.Color;
 import com.wfarooq.backend.modules.wardrobe.constants.Season;
@@ -12,26 +13,31 @@ import com.wfarooq.backend.modules.wardrobe.mapper.ClothingItemMapper;
 import com.wfarooq.backend.modules.wardrobe.repository.ClothingItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-
+@Service
 public class ClothingServiceImpl implements IClothingService{
 
     private final ClothingItemRepository clothingItemRepository;
+    private final FileStorageService fileStorageService;
     private static final Logger logger = LoggerFactory.getLogger(ClothingServiceImpl.class);
 
-    public ClothingServiceImpl(ClothingItemRepository clothingItemRepository) {
+    public ClothingServiceImpl(ClothingItemRepository clothingItemRepository, FileStorageService fileStorageService) {
         this.clothingItemRepository = clothingItemRepository;
+        this.fileStorageService = fileStorageService;
     }
 
 
     @Override
-    public ClothingItemResponse createClothingItem(CreateClothingItemRequest request) {
+    public ClothingItemResponse createClothingItem(CreateClothingItemRequest request, MultipartFile file) {
         Instant start = Instant.now();
         logger.info("[CREATE] Creating clothing item : {}", request);
+
 
         if (clothingItemRepository.existsByName(request.getName())) {
             logger.warn("[CREATE] Clothing item already exists with the name : {}", request.getName());
@@ -39,6 +45,10 @@ public class ClothingServiceImpl implements IClothingService{
         }
 
         ClothingItem item = ClothingItemMapper.toEntity(request, new ClothingItem());
+        String imageUrl = fileStorageService.uploadFile(file);
+        item.setImageURL(imageUrl);
+        logger.info("[CREATE] Clothing item image uploaded to s3 url : {}", imageUrl);
+
 
 
         ClothingItem saved = clothingItemRepository.save(item);

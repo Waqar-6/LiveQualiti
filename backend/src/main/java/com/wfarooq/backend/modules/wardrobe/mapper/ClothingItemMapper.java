@@ -20,6 +20,7 @@ public class ClothingItemMapper {
         response.setCategory(item.getCategory());
         response.setSeason(item.getSeason());
         response.setColor(item.getColor());
+        response.setImageUrl(item.getImageURL());
         response.setCreatedAt(item.getCreatedAt());
         return response;
     }

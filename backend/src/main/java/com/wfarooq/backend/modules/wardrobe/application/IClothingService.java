@@ -5,6 +5,7 @@ import com.wfarooq.backend.modules.wardrobe.constants.Color;
 import com.wfarooq.backend.modules.wardrobe.constants.Season;
 import com.wfarooq.backend.modules.wardrobe.dto.request.CreateClothingItemRequest;
 import com.wfarooq.backend.modules.wardrobe.dto.response.ClothingItemResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,7 +13,7 @@ import java.util.UUID;
 public interface IClothingService {
 
     // CRUD
-    ClothingItemResponse createClothingItem(CreateClothingItemRequest request);
+    ClothingItemResponse createClothingItem(CreateClothingItemRequest request, MultipartFile file);
 
     ClothingItemResponse getClothingItemById(UUID id);
 

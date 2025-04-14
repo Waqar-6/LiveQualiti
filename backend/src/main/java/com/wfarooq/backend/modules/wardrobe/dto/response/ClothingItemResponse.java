@@ -14,14 +14,16 @@ public class ClothingItemResponse {
     private Category category;
     private Season season;
     private Color color;
+    private String imageUrl;
     private LocalDateTime createdAt;
 
-    public ClothingItemResponse(UUID id, String name, Category category, Season season, Color color, LocalDateTime createdAt) {
+    public ClothingItemResponse(UUID id, String name, Category category, Season season, Color color,String imageUrl, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.season = season;
         this.color = color;
+        this.imageUrl = imageUrl;
         this.createdAt = createdAt;
     }
 
@@ -70,6 +72,10 @@ public class ClothingItemResponse {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
+    public String getImageUrl() {return imageUrl;}
+
+    public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;

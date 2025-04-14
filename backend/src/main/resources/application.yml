@@ -2,22 +2,8 @@
 spring:
   application:
     name: backend
-  datasource:
-    url: jdbc:h2:mem:dogdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-  jpa:
-    hibernate:
-      ddl-auto: update     # Automatically update schema for development
-    show-sql: true          # Log SQL queries
-    properties:
-      hibernate:
-        format_sql: true    # Pretty-print the SQL in logs
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
 
 logging:
   level:
@@ -27,4 +13,5 @@ logging:
     com.wfarooq.backend: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%level] %logger{36} - %msg%n"
+
 

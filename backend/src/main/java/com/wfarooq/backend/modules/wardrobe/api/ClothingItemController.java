@@ -1,6 +1,7 @@
 package com.wfarooq.backend.modules.wardrobe.api;
 
 import com.wfarooq.backend.common.dto.ResponseDto;
+import com.wfarooq.backend.common.utils.JsonUtils;
 import com.wfarooq.backend.modules.wardrobe.application.IClothingService;
 import com.wfarooq.backend.modules.wardrobe.constants.Category;
 import com.wfarooq.backend.modules.wardrobe.constants.Color;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,9 +34,10 @@ public class ClothingItemController {
 
     @PostMapping
     public ResponseEntity<ClothingItemResponse> createClothingItem(
-            @Valid @RequestBody CreateClothingItemRequest request
+            @RequestPart("request") @Valid String requestJson,@RequestPart(value = "image", required = false) MultipartFile file
     ) {
-        ClothingItemResponse response = clothingService.createClothingItem(request);
+        CreateClothingItemRequest request = JsonUtils.fromJson(requestJson, CreateClothingItemRequest.class);
+        ClothingItemResponse response = clothingService.createClothingItem(request, file);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

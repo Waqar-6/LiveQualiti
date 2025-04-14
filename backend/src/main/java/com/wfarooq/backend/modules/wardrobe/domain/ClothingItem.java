@@ -30,6 +30,8 @@ public class ClothingItem extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Color color;
 
+    private String imageURL;
+
 
     public ClothingItem(LocalDateTime createdAt, String createdBy, LocalDateTime updatedAt, String updatedBy, String name, String description, Category category, Season season, Color color) {
         super(createdAt, createdBy, updatedAt, updatedBy);
@@ -96,5 +98,13 @@ public class ClothingItem extends BaseEntity {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 }

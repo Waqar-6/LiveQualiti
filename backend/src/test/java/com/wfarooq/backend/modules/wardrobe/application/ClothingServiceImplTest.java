@@ -2,6 +2,7 @@ package com.wfarooq.backend.modules.wardrobe.application;
 
 import com.wfarooq.backend.common.exception.ResourceAlreadyExistsException;
 import com.wfarooq.backend.common.exception.ResourceNotFoundException;
+import com.wfarooq.backend.infrastructure.storage.S3FileStorageServiceImpl;
 import com.wfarooq.backend.modules.wardrobe.constants.Category;
 import com.wfarooq.backend.modules.wardrobe.constants.Color;
 import com.wfarooq.backend.modules.wardrobe.constants.Season;
@@ -14,14 +15,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Profile;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
+@Profile(value = "test")
 @ExtendWith(MockitoExtension.class)
 public class ClothingServiceImplTest {
 
@@ -31,26 +36,44 @@ public class ClothingServiceImplTest {
     @Mock
     private ClothingItemRepository clothingItemRepository;
 
+    @Mock
+    private S3FileStorageServiceImpl s3Service;
+
 
     // ========================= CREATE =========================
-
     @Test
-    void createClothingItem_validRequest_shouldReturnResponse() {
+    void createClothingItem_validRequest_shouldReturnResponse() throws IOException {
         CreateClothingItemRequest request = new CreateClothingItemRequest(
                 "Black Hoodie", "Soft and minimal", Category.TOP, Season.WINTER, Color.BLACK
         );
 
-        ClothingItem saved = new ClothingItem(request.getName(), request.getDescription(),
-                request.getCategory(), request.getSeason(), request.getColor());
-        saved.setId(UUID.randomUUID());
+        MultipartFile mockImage = new MockMultipartFile(
+                "image", "hoodie.jpg", "image/jpeg", "dummy-content".getBytes()
+        );
 
+        UUID itemId = UUID.randomUUID();
+        ClothingItem saved = new ClothingItem(
+                request.getName(), request.getDescription(),
+                request.getCategory(), request.getSeason(), request.getColor()
+        );
+        saved.setId(itemId);
+        saved.setImageURL("https://s3.amazonaws.com/your-bucket/hoodie.jpg");
+
+        // Mock behavior
         when(clothingItemRepository.existsByName(request.getName())).thenReturn(false);
+        when(s3Service.uploadFile(mockImage)).thenReturn("https://s3.amazonaws.com/your-bucket/hoodie.jpg");
         when(clothingItemRepository.save(any(ClothingItem.class))).thenReturn(saved);
 
-        ClothingItemResponse result = clothingService.createClothingItem(request);
+        // Call service
+        ClothingItemResponse result = clothingService.createClothingItem(request, mockImage);
 
+        // Assertions
         assertEquals(request.getName(), result.getName());
         assertEquals(request.getColor(), result.getColor());
+        assertEquals("https://s3.amazonaws.com/your-bucket/hoodie.jpg", result.getImageUrl());
+
+        // Verifications
+        verify(s3Service).uploadFile(mockImage);
         verify(clothingItemRepository).save(any(ClothingItem.class));
     }
 
@@ -60,13 +83,19 @@ public class ClothingServiceImplTest {
                 "Black Hoodie", "Soft and minimal", Category.TOP, Season.WINTER, Color.BLACK
         );
 
+        MultipartFile dummyImage = new MockMultipartFile(
+                "image", "hoodie.jpg", "image/jpeg", "dummy".getBytes()
+        );
+
         when(clothingItemRepository.existsByName(request.getName())).thenReturn(true);
 
         assertThrows(ResourceAlreadyExistsException.class,
-                () -> clothingService.createClothingItem(request));
+                () -> clothingService.createClothingItem(request, dummyImage));
 
         verify(clothingItemRepository, never()).save(any());
+        verify(s3Service, never()).uploadFile(any());
     }
+
 
     // ========================= READ =========================
 

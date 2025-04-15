@@ -1,5 +1,6 @@
 package com.wfarooq.backend.modules.users.api;
 
+import com.wfarooq.backend.common.dto.ResponseDto;
 import com.wfarooq.backend.modules.users.application.IUserService;
 import com.wfarooq.backend.modules.users.dto.request.CreateUserRequest;
 import com.wfarooq.backend.modules.users.dto.response.UserResponse;
@@ -40,5 +41,12 @@ public class UserController {
     public ResponseEntity<List<UserResponse>> getAllUsers () {
         List<UserResponse> allUsers = userService.getAllUsers();
         return new ResponseEntity<>(allUsers, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDto> deleteUserById (@PathVariable UUID id) {
+        boolean isDeleted = userService.deleteUserById(id);
+        return isDeleted ? new ResponseEntity<>(new ResponseDto("200", "User deleted successfully"), HttpStatus.OK) :
+                new ResponseEntity<>(new ResponseDto("417", "EXPECTATION_FAILED  could not delete user please try again"), HttpStatus.EXPECTATION_FAILED);
     }
 }

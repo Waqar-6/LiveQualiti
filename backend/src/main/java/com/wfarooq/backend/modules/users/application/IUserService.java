@@ -14,5 +14,5 @@ public interface IUserService {
 
     List<UserResponse> getAllUsers();
 
-    boolean deleteUser (UUID id);
+    boolean deleteUserById (UUID id);
 }

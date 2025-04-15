@@ -75,7 +75,7 @@ public class UserServiceImpl implements IUserService{
     }
 
     @Override
-    public boolean deleteUser(UUID id) {
+    public boolean deleteUserById(UUID id) {
         Instant start = Instant.now();
 
         logger.info("[DELETE] Deleting user with the id : {}", id);

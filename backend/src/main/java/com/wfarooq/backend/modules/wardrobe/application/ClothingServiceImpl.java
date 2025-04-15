@@ -111,7 +111,7 @@ public class ClothingServiceImpl implements IClothingService{
                 });
 
         clothingItemRepository.delete(item);
-        logger.info("[DELETE] Deleted clothing item with ID: {}", id);
+        logger.debug("[DELETE] Deleted clothing item with ID: {}", id);
         logger.info("[METRIC] Deleted item in {}ms", Duration.between(start, Instant.now()).toMillis());
     }
 

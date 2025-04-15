@@ -73,4 +73,20 @@ public class UserServiceImpl implements IUserService{
         logger.info("[METRIC] All users fetched in {}ms", Duration.between(start, Instant.now()).toMillis());
         return allUsers.stream().map(user -> UserMapper.toResponse(user, new UserResponse())).toList();
     }
+
+    @Override
+    public boolean deleteUser(UUID id) {
+        Instant start = Instant.now();
+
+        logger.info("[DELETE] Deleting user with the id : {}", id);
+        LivQualitiUser user = userRepository.findById(id).orElseThrow(() -> {
+            logger.warn("[DELETE] User not found with the id : {}", id);
+            return new ResourceNotFoundException("User", "id", id.toString());
+        });
+
+        userRepository.delete(user);
+        logger.debug("[DELETE] Deleted user with id : {}", id);
+        logger.info("[METRIC] Deleted user in {}ms", Duration.between(start, Instant.now()).toMillis());
+        return true;
+    }
 }

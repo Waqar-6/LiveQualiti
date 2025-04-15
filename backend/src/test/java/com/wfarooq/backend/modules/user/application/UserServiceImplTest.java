@@ -99,8 +99,19 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteUser_shouldDeleteUser() {
+    void deleteUser_withValidId_shouldDeleteUser() {
         // You write the logic here
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        userService.deleteUserById(user.getId());
+        verify(userRepository, times(1)).delete(any(LivQualitiUser.class));
+    }
+
+    @Test
+    void deleteUser_withNonValidId_shouldDeleteUser() {
+        // You write the logic here
+        when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> userService.deleteUserById(user.getId()));
+        verify(userRepository, never()).delete(any(LivQualitiUser.class));
     }
 
     @Test

@@ -1,7 +1,5 @@
 package com.wfarooq.backend.modules.auth.config;
 
-import com.wfarooq.backend.modules.auth.exception.LivQaulitiAccessDeniedHandler;
-import com.wfarooq.backend.modules.auth.exception.LivQualitiBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -14,14 +12,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@Profile("!prod")
-public class SecurityConfig {
+@Profile("prod")
+public class SecurityProdConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
-        System.out.println("/////// Non Prod Security Config Loaded /////////");
+        System.out.println("/////// Prod Security Config Loaded /////////");
         http
-                .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // accepts only HTTP traffic for dev/test environment 
+                .requiresChannel(rcc -> rcc.anyRequest().requiresSecure()) // accepts only HTTPS traffic
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
@@ -30,9 +28,7 @@ public class SecurityConfig {
 
 
 
-        http.httpBasic(httpBasicConfig -> httpBasicConfig.authenticationEntryPoint(new LivQualitiBasicAuthenticationEntryPoint()));
-        http.exceptionHandling(exceptionHandlingConfig -> exceptionHandlingConfig.accessDeniedHandler(new LivQaulitiAccessDeniedHandler()));
-
+        http.httpBasic(withDefaults());
         return http.build();
     }
 

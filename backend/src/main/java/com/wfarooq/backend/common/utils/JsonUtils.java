@@ -15,4 +15,13 @@ public class JsonUtils {
             throw new BadRequestException("Invalid JSON format: " + e.getOriginalMessage());
         }
     }
+
+
+    public static String toJson(Object obj) {
+        try {
+            return objectMapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            throw new BadRequestException("Failed to convert object to JSON : " + e.getOriginalMessage());
+        }
+    }
 }

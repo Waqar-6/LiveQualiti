@@ -1,6 +1,7 @@
 package com.wfarooq.backend.common.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
@@ -50,5 +51,15 @@ public class ErrorResponseDto {
 
     public void setErrorTime(LocalDateTime errorTime) {
         this.errorTime = errorTime;
+    }
+
+    @Override
+    public String toString() {
+        return "ErrorResponseDto{" +
+                "apiPath='" + this.apiPath + '\'' +
+                ", errorStatus=" + (this.errorStatus != null ? errorStatus.value() + " " + errorStatus.name() : "null") +
+                ", errorMessage='" + this.errorMessage + '\'' +
+                ", errorTime=" + (this.errorTime != null ? this.errorTime.toString() : "null") +
+                '}';
     }
 }

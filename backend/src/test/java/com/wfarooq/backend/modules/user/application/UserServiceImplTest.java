@@ -1,5 +1,6 @@
 package com.wfarooq.backend.modules.user.application;
 
+import com.wfarooq.backend.common.enums.Roles;
 import com.wfarooq.backend.common.exception.ResourceAlreadyExistsException;
 import com.wfarooq.backend.common.exception.ResourceNotFoundException;
 import com.wfarooq.backend.modules.users.application.UserServiceImpl;
@@ -36,7 +37,7 @@ class UserServiceImplTest {
     @BeforeEach
     void setUp() {
         request = new CreateUserRequest(
-                "John", "Doe", "johndoe", "john@example.com", "password123"
+                "John", "Doe", "johndoe", "john@example.com", "password123", Roles.ROLE_USER
         );
         user = new LivQualitiUser();
         user.setId(UUID.randomUUID());

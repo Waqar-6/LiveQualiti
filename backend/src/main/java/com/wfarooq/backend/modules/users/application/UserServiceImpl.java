@@ -2,6 +2,7 @@ package com.wfarooq.backend.modules.users.application;
 
 import com.wfarooq.backend.common.exception.ResourceAlreadyExistsException;
 import com.wfarooq.backend.common.exception.ResourceNotFoundException;
+import com.wfarooq.backend.modules.auth.domain.Role;
 import com.wfarooq.backend.modules.users.domain.LivQualitiUser;
 import com.wfarooq.backend.modules.users.dto.request.CreateUserRequest;
 import com.wfarooq.backend.modules.users.dto.response.UserResponse;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 @Service
 public class UserServiceImpl implements IUserService{
@@ -37,6 +39,13 @@ public class UserServiceImpl implements IUserService{
         }
 
         LivQualitiUser newUser = UserMapper.toEntity(request, new LivQualitiUser());
+
+        Role role = new Role();
+        role.setName(request.getRole());
+        role.setUser(newUser);
+
+        newUser.setRoles(Set.of(role));
+
         LivQualitiUser saved = userRepository.save(newUser);
 
         logger.debug("[CREATE] new user saved : {}", saved);

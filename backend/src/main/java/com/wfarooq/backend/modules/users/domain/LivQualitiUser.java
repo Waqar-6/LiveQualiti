@@ -1,9 +1,13 @@
 package com.wfarooq.backend.modules.users.domain;
 
+import com.wfarooq.backend.common.enums.Roles;
 import com.wfarooq.backend.infrastructure.persistence.BaseEntity;
+import com.wfarooq.backend.modules.auth.domain.Role;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -27,7 +31,10 @@ public class LivQualitiUser extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    public LivQualitiUser(LocalDateTime createdAt, String createdBy, LocalDateTime updatedAt, String updatedBy, UUID id, String firstName, String lastName, String username, String email, String password) {
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Role> roles = new HashSet<>();
+
+    public LivQualitiUser(LocalDateTime createdAt, String createdBy, LocalDateTime updatedAt, String updatedBy, UUID id, String firstName, String lastName, String username, String email, String password, Set<Role> roles) {
         super(createdAt, createdBy, updatedAt, updatedBy);
         this.id = id;
         this.firstName = firstName;
@@ -35,6 +42,7 @@ public class LivQualitiUser extends BaseEntity {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.roles = roles;
     }
 
     public LivQualitiUser(UUID id, String firstName, String lastName, String username, String email, String password) {
@@ -94,5 +102,13 @@ public class LivQualitiUser extends BaseEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

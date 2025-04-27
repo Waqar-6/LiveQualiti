@@ -1,5 +1,6 @@
 package com.wfarooq.backend.modules.users.dto.request;
 
+import com.wfarooq.backend.common.enums.Roles;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -19,12 +20,15 @@ public class CreateUserRequest {
     @Size(min = 6, max = 20, message = "password can not be less then 6 characters or more then 20")
     private String password;
 
-    public CreateUserRequest(String firstName, String lastName, String username, String email, String password) {
+    Roles role;
+
+    public CreateUserRequest(String firstName, String lastName, String username, String email, String password, Roles role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     public CreateUserRequest () {}
@@ -67,5 +71,13 @@ public class CreateUserRequest {
 
     public void setPassword(@NotBlank(message = "password can not be empty") @Size(min = 6, max = 20, message = "email can not be less then 6 characters or more then 20") String password) {
         this.password = password;
+    }
+
+    public Roles getRole() {
+        return role;
+    }
+
+    public void setRole(Roles role) {
+        this.role = role;
     }
 }

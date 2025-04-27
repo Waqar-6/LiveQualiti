@@ -2,6 +2,7 @@ package com.wfarooq.backend.modules.auth.security;
 
 import com.wfarooq.backend.modules.users.domain.LivQualitiUser;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -16,7 +17,7 @@ public class LivQualitiCustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return livQualitiUser.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName().name())).toList();
     }
 
     @Override

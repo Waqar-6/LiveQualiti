@@ -3,27 +3,22 @@ package com.wfarooq.backend.modules.auth.dto.response;
 import com.wfarooq.backend.modules.users.dto.response.UserResponse;
 
 public class AuthResponse {
-    private UserResponse userResponse;
-    private String message;
+    private String jwtToken;
 
-    public AuthResponse(UserResponse userResponse, String message) {
-        this.userResponse = userResponse;
-        this.message = message;
+
+    public AuthResponse(String jwtToken) {
+        this.jwtToken = jwtToken;
+
     }
 
-    public UserResponse getUserResponse() {
-        return userResponse;
+    public String getJwtToken() {
+        return jwtToken;
     }
 
-    public void setUserResponse(UserResponse userResponse) {
-        this.userResponse = userResponse;
+    public void setJwtToken(String jwtToken) {
+        this.jwtToken = jwtToken;
     }
 
-    public String getMessage() {
-        return message;
-    }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+
 }

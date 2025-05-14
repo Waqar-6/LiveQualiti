@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +33,7 @@ public class ClothingItemController {
 
     // CRUD
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
     public ResponseEntity<ClothingItemResponse> createClothingItem(
             @RequestPart("request") @Valid String requestJson,@RequestPart(value = "image", required = false) MultipartFile file
@@ -42,13 +44,14 @@ public class ClothingItemController {
     }
 
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{id}")
     public ResponseEntity<ClothingItemResponse> getClothingItemById(@PathVariable UUID id) {
         ClothingItemResponse response = clothingService.getClothingItemById(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/{id}")
     public ResponseEntity<ClothingItemResponse> updateClothingItem(
             @PathVariable UUID id,
@@ -58,7 +61,7 @@ public class ClothingItemController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDto> deleteClothingItem(@PathVariable UUID id) {
         clothingService.deleteClothingItem(id);
@@ -66,6 +69,7 @@ public class ClothingItemController {
     }
 
     // Lists And Filtering
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
     public ResponseEntity<List<ClothingItemResponse>> getAllClothingItems() {
         List<ClothingItemResponse> items = clothingService.getAllClothingItems();
@@ -73,6 +77,7 @@ public class ClothingItemController {
     }
 
     // GET items by category
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/filter/category")
     public ResponseEntity<List<ClothingItemResponse>> getItemsByCategory(
             @RequestParam Category category
@@ -82,19 +87,17 @@ public class ClothingItemController {
     }
 
     // GET items by season
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/filter/season")
-    public ResponseEntity<List<ClothingItemResponse>> getItemsBySeason(
-            @RequestParam Season season
-    ) {
+    public ResponseEntity<List<ClothingItemResponse>> getItemsBySeason(@RequestParam Season season) {
         List<ClothingItemResponse> items = clothingService.getClothingItemsBySeason(season);
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
     // GET items by color
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/filter/color")
-    public ResponseEntity<List<ClothingItemResponse>> getItemsByColor(
-            @RequestParam Color color
-    ) {
+    public ResponseEntity<List<ClothingItemResponse>> getItemsByColor(@RequestParam Color color) {
         List<ClothingItemResponse> items = clothingService.getClothingItemsByColor(color);
         return new ResponseEntity<>(items, HttpStatus.OK);
     }

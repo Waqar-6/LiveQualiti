@@ -2,6 +2,7 @@ package com.wfarooq.backend.modules.auth.api;
 
 import com.wfarooq.backend.common.dto.ResponseDto;
 import com.wfarooq.backend.modules.auth.application.IAuthService;
+import com.wfarooq.backend.modules.auth.dto.request.LoginRequest;
 import com.wfarooq.backend.modules.auth.dto.response.AuthResponse;
 import com.wfarooq.backend.modules.users.dto.request.CreateUserRequest;
 import jakarta.validation.Valid;
@@ -29,5 +30,10 @@ public class AuthController {
     public ResponseEntity<ResponseDto> register (@Valid @RequestBody CreateUserRequest request) {
         String res = authService.registerUser(request);
         return new ResponseEntity<>(new ResponseDto("201", res), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login (@RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginRequest));
     }
 }

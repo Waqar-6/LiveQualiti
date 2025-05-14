@@ -3,6 +3,8 @@ package com.wfarooq.backend.modules.wardrobe.application;
 import com.wfarooq.backend.common.exception.ResourceAlreadyExistsException;
 import com.wfarooq.backend.common.exception.ResourceNotFoundException;
 import com.wfarooq.backend.infrastructure.storage.FileStorageService;
+import com.wfarooq.backend.modules.users.domain.LivQualitiUser;
+import com.wfarooq.backend.modules.users.repository.UserRepository;
 import com.wfarooq.backend.modules.wardrobe.constants.Category;
 import com.wfarooq.backend.modules.wardrobe.constants.Color;
 import com.wfarooq.backend.modules.wardrobe.constants.Season;
@@ -13,6 +15,9 @@ import com.wfarooq.backend.modules.wardrobe.mapper.ClothingItemMapper;
 import com.wfarooq.backend.modules.wardrobe.repository.ClothingItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,11 +30,13 @@ public class ClothingServiceImpl implements IClothingService{
 
     private final ClothingItemRepository clothingItemRepository;
     private final FileStorageService fileStorageService;
+    private final UserRepository userRepository;
     private static final Logger logger = LoggerFactory.getLogger(ClothingServiceImpl.class);
 
-    public ClothingServiceImpl(ClothingItemRepository clothingItemRepository, FileStorageService fileStorageService) {
+    public ClothingServiceImpl(ClothingItemRepository clothingItemRepository, FileStorageService fileStorageService, UserRepository userRepository) {
         this.clothingItemRepository = clothingItemRepository;
         this.fileStorageService = fileStorageService;
+        this.userRepository = userRepository;
     }
 
 
@@ -44,7 +51,15 @@ public class ClothingServiceImpl implements IClothingService{
             throw new ResourceAlreadyExistsException("Clothing item", "name", request.getName());
         }
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+        LivQualitiUser user = userRepository.findByEmail(currentUserEmail).orElseThrow(() -> {
+            logger.warn("[CREATE] Could not find user with the email : {} while creating clothing item ", currentUserEmail);
+            return new ResourceNotFoundException("User", "Email", currentUserEmail);
+        });
+
         ClothingItem item = ClothingItemMapper.toEntity(request, new ClothingItem());
+        item.setUser(user);
         String imageUrl = fileStorageService.uploadFile(file);
         item.setImageURL(imageUrl);
         logger.info("[CREATE] Clothing item image uploaded to s3 url : {}", imageUrl);
@@ -121,7 +136,14 @@ public class ClothingServiceImpl implements IClothingService{
         Instant start = Instant.now();
         logger.info("[READ] Fetching all clothing items");
 
-        List<ClothingItem> items = clothingItemRepository.findAll();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+        LivQualitiUser user = userRepository.findByEmail(currentUserEmail).orElseThrow(() -> {
+            logger.warn("[READ] Could not find user with the email : {} while getting clothing items ", currentUserEmail);
+            return new ResourceNotFoundException("User", "Email", currentUserEmail);
+        });
+
+        List<ClothingItem> items = clothingItemRepository.findByUser(user);
 
         logger.debug("[READ] Total items fetched: {}", items.size());
         logger.info("[METRIC] Fetched all items in {}ms", Duration.between(start, Instant.now()).toMillis());

@@ -1,5 +1,6 @@
 package com.wfarooq.backend.modules.wardrobe.repository;
 
+import com.wfarooq.backend.modules.users.domain.LivQualitiUser;
 import com.wfarooq.backend.modules.wardrobe.constants.Category;
 import com.wfarooq.backend.modules.wardrobe.constants.Color;
 import com.wfarooq.backend.modules.wardrobe.constants.Season;
@@ -16,4 +17,5 @@ public interface ClothingItemRepository extends JpaRepository<ClothingItem, UUID
     List<ClothingItem> findByColor (Color color);
     List<ClothingItem> findBySeason (Season season);
     List<ClothingItem> findByCategory (Category category);
+    List<ClothingItem> findByUser (LivQualitiUser user);
 }

@@ -1,6 +1,7 @@
 package com.wfarooq.backend.modules.wardrobe.domain;
 
 import com.wfarooq.backend.infrastructure.persistence.BaseEntity;
+import com.wfarooq.backend.modules.users.domain.LivQualitiUser;
 import com.wfarooq.backend.modules.wardrobe.constants.Category;
 import com.wfarooq.backend.modules.wardrobe.constants.Color;
 import com.wfarooq.backend.modules.wardrobe.constants.Season;
@@ -32,22 +33,28 @@ public class ClothingItem extends BaseEntity {
 
     private String imageURL;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private LivQualitiUser user;
 
-    public ClothingItem(LocalDateTime createdAt, String createdBy, LocalDateTime updatedAt, String updatedBy, String name, String description, Category category, Season season, Color color) {
+
+    public ClothingItem(LocalDateTime createdAt, String createdBy, LocalDateTime updatedAt, String updatedBy, String name, String description, Category category, Season season, Color color, LivQualitiUser user) {
         super(createdAt, createdBy, updatedAt, updatedBy);
         this.name = name;
         this.description = description;
         this.category = category;
         this.season = season;
         this.color = color;
+        this.user = user;
     }
 
-    public ClothingItem(String name, String description, Category category, Season season, Color color) {
+    public ClothingItem(String name, String description, Category category, Season season, Color color, LivQualitiUser user) {
         this.name = name;
         this.description = description;
         this.category = category;
         this.season = season;
         this.color = color;
+        this.user = user;
     }
 
     public ClothingItem () {}
@@ -106,5 +113,13 @@ public class ClothingItem extends BaseEntity {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    public LivQualitiUser getUser() {
+        return user;
+    }
+
+    public void setUser(LivQualitiUser user) {
+        this.user = user;
     }
 }

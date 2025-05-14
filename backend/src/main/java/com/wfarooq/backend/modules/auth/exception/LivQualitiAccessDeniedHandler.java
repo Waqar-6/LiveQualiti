@@ -10,7 +10,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-public class LivQaulitiAccessDeniedHandler implements AccessDeniedHandler {
+public class LivQualitiAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
 

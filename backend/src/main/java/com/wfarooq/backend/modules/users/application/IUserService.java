@@ -10,6 +10,7 @@ public interface IUserService {
 
     UserResponse createUser(CreateUserRequest request);
 
+
     UserResponse getUserById(UUID id);
 
     List<UserResponse> getAllUsers();

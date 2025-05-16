@@ -23,7 +23,7 @@ public interface IClothingService {
 
 
     // Listing and Filtering
-    List<ClothingItemResponse> getAllClothingItems();
+    List<ClothingItemResponse> getAllClothingItems(String ownerUsername);
 
     List<ClothingItemResponse> getClothingItemsByCategory(Category category);
 

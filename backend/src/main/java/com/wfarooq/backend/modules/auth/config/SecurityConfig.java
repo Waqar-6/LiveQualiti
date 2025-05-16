@@ -1,6 +1,7 @@
 package com.wfarooq.backend.modules.auth.config;
 
 import com.wfarooq.backend.modules.auth.exception.LivQualitiAccessDeniedHandler;
+import com.wfarooq.backend.modules.auth.filters.CSRFTokenFilter;
 import com.wfarooq.backend.modules.auth.security.LivQualitiUserDetailsService;
 import com.wfarooq.backend.modules.auth.security.LivQualitiUsernamePasswordAuthenticationProvider;
 import com.wfarooq.backend.modules.auth.security.jwt.JWTAuthenticationEntryPoint;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
@@ -28,7 +30,6 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
-@EnableMethodSecurity
 @Profile("!prod")
 public class SecurityConfig {
 
@@ -70,7 +71,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .anyRequest().authenticated())
-                .addFilterBefore(new JWTValidationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(new CSRFTokenFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new JWTValidationFilter(jwtProvider), BasicAuthenticationFilter.class);
 
         http.exceptionHandling(exceptionHandling -> exceptionHandling
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)

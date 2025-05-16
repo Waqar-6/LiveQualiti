@@ -61,12 +61,11 @@ public class JWTProvider {
         logger.debug("[JWT_PROVIDER] Extracting email from JWT token");
 
         try {
-            String email = Jwts.parser()
+            String email = String.valueOf(Jwts.parser()
                     .verifyWith((SecretKey) generateKey())
                     .build()
                     .parseSignedClaims(token)
-                    .getPayload()
-                    .getSubject();
+                    .getPayload());
 
             logger.info("[JWT_PROVIDER] [SUCCESS] Email extracted in {}ms",
                     Duration.between(start, Instant.now()).toMillis());

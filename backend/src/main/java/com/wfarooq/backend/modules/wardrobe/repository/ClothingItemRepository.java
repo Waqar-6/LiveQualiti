@@ -17,5 +17,5 @@ public interface ClothingItemRepository extends JpaRepository<ClothingItem, UUID
     List<ClothingItem> findByColor (Color color);
     List<ClothingItem> findBySeason (Season season);
     List<ClothingItem> findByCategory (Category category);
-    List<ClothingItem> findByUser (LivQualitiUser user);
+    List<ClothingItem> findByOwnerUsername (String ownerUsername);
 }

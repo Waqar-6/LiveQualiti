@@ -16,7 +16,6 @@ import com.wfarooq.backend.modules.wardrobe.repository.ClothingItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,24 +44,21 @@ public class ClothingServiceImpl implements IClothingService{
         Instant start = Instant.now();
         logger.info("[CREATE] Creating clothing item : {}", request);
 
+        String ownerUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 
         if (clothingItemRepository.existsByName(request.getName())) {
             logger.warn("[CREATE] Clothing item already exists with the name : {}", request.getName());
             throw new ResourceAlreadyExistsException("Clothing item", "name", request.getName());
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserEmail = authentication.getName();
-        LivQualitiUser user = userRepository.findByEmail(currentUserEmail).orElseThrow(() -> {
-            logger.warn("[CREATE] Could not find user with the email : {} while creating clothing item ", currentUserEmail);
-            return new ResourceNotFoundException("User", "Email", currentUserEmail);
-        });
-
         ClothingItem item = ClothingItemMapper.toEntity(request, new ClothingItem());
-        item.setUser(user);
+
+        logger.info("[CREATE] Owner username is : {}", ownerUsername);
         String imageUrl = fileStorageService.uploadFile(file);
         item.setImageURL(imageUrl);
+        item.setOwnerUsername(ownerUsername);
         logger.info("[CREATE] Clothing item image uploaded to s3 url : {}", imageUrl);
+
 
 
 
@@ -132,18 +128,13 @@ public class ClothingServiceImpl implements IClothingService{
 
 
     @Override
-    public List<ClothingItemResponse> getAllClothingItems() {
+    public List<ClothingItemResponse> getAllClothingItems(String ownerUsername) {
         Instant start = Instant.now();
         logger.info("[READ] Fetching all clothing items");
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserEmail = authentication.getName();
-        LivQualitiUser user = userRepository.findByEmail(currentUserEmail).orElseThrow(() -> {
-            logger.warn("[READ] Could not find user with the email : {} while getting clothing items ", currentUserEmail);
-            return new ResourceNotFoundException("User", "Email", currentUserEmail);
-        });
 
-        List<ClothingItem> items = clothingItemRepository.findByUser(user);
+
+        List<ClothingItem> items = clothingItemRepository.findByOwnerUsername(ownerUsername);
 
         logger.debug("[READ] Total items fetched: {}", items.size());
         logger.info("[METRIC] Fetched all items in {}ms", Duration.between(start, Instant.now()).toMillis());

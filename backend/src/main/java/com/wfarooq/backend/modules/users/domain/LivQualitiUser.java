@@ -35,10 +35,7 @@ public class LivQualitiUser extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ClothingItem> clothingItems;
-
-    public LivQualitiUser(LocalDateTime createdAt, String createdBy, LocalDateTime updatedAt, String updatedBy, UUID id, String firstName, String lastName, String username, String email, String password, Set<Role> roles, List<ClothingItem> clothingItems) {
+    public LivQualitiUser(LocalDateTime createdAt, String createdBy, LocalDateTime updatedAt, String updatedBy, UUID id, String firstName, String lastName, String username, String email, String password, Set<Role> roles) {
         super(createdAt, createdBy, updatedAt, updatedBy);
         this.id = id;
         this.firstName = firstName;
@@ -47,10 +44,9 @@ public class LivQualitiUser extends BaseEntity {
         this.email = email;
         this.password = password;
         this.roles = roles;
-        this.clothingItems = clothingItems;
     }
 
-    public LivQualitiUser(UUID id, String firstName, String lastName, String username, String email, String password,Set<Role> roles, List<ClothingItem> clothingItems) {
+    public LivQualitiUser(UUID id, String firstName, String lastName, String username, String email, String password,Set<Role> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -58,7 +54,6 @@ public class LivQualitiUser extends BaseEntity {
         this.email = email;
         this.password = password;
         this.roles = roles;
-        this.clothingItems = clothingItems;
     }
 
     public LivQualitiUser () {}
@@ -119,11 +114,4 @@ public class LivQualitiUser extends BaseEntity {
         this.roles = roles;
     }
 
-    public List<ClothingItem> getClothingItems() {
-        return clothingItems;
-    }
-
-    public void setClothingItems(List<ClothingItem> clothingItems) {
-        this.clothingItems = clothingItems;
-    }
 }

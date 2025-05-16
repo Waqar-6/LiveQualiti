@@ -33,28 +33,24 @@ public class ClothingItem extends BaseEntity {
 
     private String imageURL;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private LivQualitiUser user;
+    private String ownerUsername;
 
 
-    public ClothingItem(LocalDateTime createdAt, String createdBy, LocalDateTime updatedAt, String updatedBy, String name, String description, Category category, Season season, Color color, LivQualitiUser user) {
+    public ClothingItem(LocalDateTime createdAt, String createdBy, LocalDateTime updatedAt, String updatedBy, String name, String description, Category category, Season season, Color color) {
         super(createdAt, createdBy, updatedAt, updatedBy);
         this.name = name;
         this.description = description;
         this.category = category;
         this.season = season;
         this.color = color;
-        this.user = user;
     }
 
-    public ClothingItem(String name, String description, Category category, Season season, Color color, LivQualitiUser user) {
+    public ClothingItem(String name, String description, Category category, Season season, Color color) {
         this.name = name;
         this.description = description;
         this.category = category;
         this.season = season;
         this.color = color;
-        this.user = user;
     }
 
     public ClothingItem () {}
@@ -115,11 +111,11 @@ public class ClothingItem extends BaseEntity {
         this.imageURL = imageURL;
     }
 
-    public LivQualitiUser getUser() {
-        return user;
+    public String getOwnerUsername() {
+        return ownerUsername;
     }
 
-    public void setUser(LivQualitiUser user) {
-        this.user = user;
+    public void setOwnerUsername(String ownerUsername) {
+        this.ownerUsername = ownerUsername;
     }
 }

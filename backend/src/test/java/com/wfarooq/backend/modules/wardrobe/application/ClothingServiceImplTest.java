@@ -189,7 +189,7 @@ public class ClothingServiceImplTest {
         );
         when(clothingItemRepository.findAll()).thenReturn(items);
 
-        List<ClothingItemResponse> result = clothingService.getAllClothingItems();
+        List<ClothingItemResponse> result = clothingService.getAllClothingItems("harry");
         assertEquals(1, result.size());
     }
 
